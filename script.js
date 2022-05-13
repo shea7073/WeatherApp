@@ -44,8 +44,30 @@ const degreeToDirection = function(degree) {
     return direction;
 }
 
-async function fetchWeather() {
-    let response = await fetch('https://community-open-weather-map.p.rapidapi.com/weather?q=London%2Cuk&lat=0&lon=0&lang=null&units=imperial', options);
+const parseLocation = function(text) {
+    if (text.includes(' ') && text.includes(',')) {
+        const parameters = text.split(',')
+        const stripped_parameters = [];
+        for (let parameter of parameters) {
+            const stripped_parameter = parameter.trim();
+            stripped_parameters.push(stripped_parameter)
+        }
+        return `https://community-open-weather-map.p.rapidapi.com/weather?q=${stripped_parameters[0]}%2C${stripped_parameters[1]}%2Cus&lat=0&lon=0&lang=null&units=imperial`;
+    } else if (text.includes(' ') && !(text.includes(','))){
+        const parameters = text.split(' ');
+        return `https://community-open-weather-map.p.rapidapi.com/weather?q=${parameters[0]}%2C${parameters[1]}%2Cus&lat=0&lon=0&lang=null&units=imperial`;
+    } else if (!(text.includes(' ')) && text.includes(',')){
+        const parameters = text.split(',');
+        return `https://community-open-weather-map.p.rapidapi.com/weather?q=${parameters[0]}%2C${parameters[1]}%2Cus&lat=0&lon=0&lang=null&units=imperial`;
+    } else {
+        alert('Invalid input!');
+    }
+}
+
+
+
+async function fetchWeather(url) {
+    let response = await fetch(url, options);
     const data = await response.json();
     console.log(data);
     document.querySelector('.temp').textContent = data.main.temp + '°';
@@ -65,7 +87,12 @@ async function fetchWeather() {
     document.querySelector('.low').textContent = 'L: ' + data.main.temp_min;
 }
 
-fetchWeather().catch(e => console.log(e));
+//fetchWeather().catch(e => console.log(e));
 
 
+document.querySelector('.go').addEventListener('click', function () {
+    let input = document.querySelector('.location').value;
+    fetchWeather(parseLocation(input)).catch(e => console.log(e));
+    document.querySelector('.location').textContent = '';
+})
 

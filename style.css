@@ -40,6 +40,11 @@ body {
     font-weight: bold;
 }
 
+.description {
+    margin: 20px auto;
+    text-align: center;
+}
+
 
 .default-icon {
     display: block;

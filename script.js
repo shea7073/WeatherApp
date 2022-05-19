@@ -1,3 +1,5 @@
+
+// api call key and header
 const options = {
     method: 'GET',
     headers: {
@@ -6,6 +8,39 @@ const options = {
     }
 };
 
+const capitalize = function(s) {
+    let final = '';
+    const splitString = s.split(' ');
+    for (let word of splitString) {
+        final += word[0].toUpperCase() + word.slice(1) + ' ';
+    }
+    return final;
+}
+
+const pickIcon = function(id) {
+    if (id.toString().startsWith('2')) {
+        return 'thunderstorm.svg';
+    } else if (id.toString() === '800') {
+        return 'clearSky.svg';
+    } else if (id.toString().startsWith('3')) {
+        return 'drizzle.svg';
+    } else if (id.toString().startsWith('5')) {
+        return 'rain.svg';
+    } else if (id.toString().startsWith('6')) {
+        return 'snow.svg';
+    } else if (id.toString().startsWith('7')) {
+        return 'atmosphere.svg';
+    } else if (id === 801 || id === 802) {
+        return 'partlyCloudyDay.svg';
+    } else if (id === 803 || id === 804) {
+        return 'cloudy.svg'
+    } else {
+        throw 'Weather ID invalid';
+    }
+}
+
+
+// translate degree value into direction for wind
 const degreeToDirection = function(degree) {
     let direction;
     if (degree >= 348.75 || degree <= 11.25) {
@@ -70,6 +105,8 @@ async function fetchWeather(url) {
     let response = await fetch(url, options);
     const data = await response.json();
     console.log(data);
+    document.querySelector('.description').textContent = capitalize(data.weather[0].description);
+    document.querySelector('.default-icon').src = 'assets/svg/' + pickIcon(data.weather[0].id);
     document.querySelector('.temp').textContent = data.main.temp + '°';
     document.querySelector('.temp').innerHTML += "<p class=\"temp-units\">F</p>";
     document.querySelector('.pressure').textContent = 'Pressure - ' + data.main.pressure;
@@ -94,5 +131,5 @@ document.querySelector('.go').addEventListener('click', function () {
     let input = document.querySelector('.location').value;
     fetchWeather(parseLocation(input)).catch(e => console.log(e));
     document.querySelector('.location').textContent = '';
-})
+});
 

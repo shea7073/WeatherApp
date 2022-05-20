@@ -23,7 +23,7 @@ const pickIcon = function(id) {
     } else if (id.toString() === '800') {
         return 'clearSky.svg';
     } else if (id.toString().startsWith('3')) {
-        return 'drizzle.svg';
+        return 'realDrizzle.svg';
     } else if (id.toString().startsWith('5')) {
         return 'rain.svg';
     } else if (id.toString().startsWith('6')) {
@@ -133,3 +133,11 @@ document.querySelector('.go').addEventListener('click', function () {
     document.querySelector('.location').textContent = '';
 });
 
+document.querySelector('.location').addEventListener('keydown', function (e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        let input = document.querySelector('.location').value;
+        fetchWeather(parseLocation(input)).catch(e => console.log(e));
+        document.querySelector('.location').textContent = '';
+    }
+});
